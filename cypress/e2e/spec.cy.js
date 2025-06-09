@@ -68,4 +68,59 @@ describe('TODOMvc App', () => {
       .children()
       .should('have.length', 2);
   });
+
+ it('Edita uma tarefa existente', () => {
+    cy.visit('');
+
+    cy.get('[data-cy=todo-input]')
+      .type('Tarefa original{enter}');
+
+    cy.get('[data-cy=todos-list] li label')
+      .dblclick();
+
+    cy.get('[data-cy=todos-list] li .edit')
+      .clear()
+      .type('Tarefa editada{enter}');
+
+    cy.get('[data-cy=todos-list]')
+      .children()
+      .first()
+      .should('have.text', 'Tarefa editada');
+  });
+
+  it('Marca todas as tarefas como completas com toggle-all', () => {
+      cy.visit('');
+
+      cy.get('[data-cy=todo-input]')
+        .type('TP2 Eng Software{enter}')
+        .type('Relatório Lab de Eletrônica{enter}');
+
+      cy.get('.toggle-all-label').click();
+
+      cy.get('[data-cy=todos-list] > li [data-cy=toggle-todo-checkbox]')
+        .each($el => {
+          cy.wrap($el).should('be.checked');
+        });
+
+      cy.get('.clear-completed').should('be.visible');
+    });
+
+  it('Limpa todas as tarefas completas', () => {
+    cy.visit('');
+
+    cy.get('[data-cy=todo-input]')
+      .type('Prova de Aprendizado de Máquina{enter}');
+
+    cy.get('[data-cy=todos-list] > li [data-cy=toggle-todo-checkbox]')
+      .click();
+
+    cy.get('.clear-completed')
+      .should('be.visible')
+      .click();
+
+    cy.get('[data-cy=todos-list]')
+      .children()
+      .should('have.length', 0);
+  });
+
 });
